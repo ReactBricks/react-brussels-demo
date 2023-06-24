@@ -1,4 +1,5 @@
-import { types } from 'react-bricks/frontend'
+import { fetchPages, types } from 'react-bricks/frontend'
+import config from './config'
 
 const pageTypes: types.IPageType[] = [
   {
@@ -7,33 +8,54 @@ const pageTypes: types.IPageType[] = [
     defaultLocked: false,
     defaultStatus: types.PageStatus.Published,
     getDefaultContent: () => [],
+    getExternalData: async (page, args) => {
+      const pages = await fetchPages(config.apiKey, {
+        type: 'speaker',
+        pageSize: 100,
+        sort: 'publishedAt',
+      })
+      return {
+        speakers: pages,
+      }
+    },
   },
   {
-    name: 'blog',
-    pluralName: 'Blog',
+    name: 'speaker',
+    pluralName: 'speakers',
     defaultLocked: false,
     defaultStatus: types.PageStatus.Published,
-    getDefaultContent: () => [],
-    allowedBlockTypes: [
-      'title',
-      'paragraph',
-      'big-image',
-      'video',
-      'code',
-      'tweet',
-      'tweet-light',
-      'blog-title',
-      'newsletter-subscribe',
-      'external-data-example',
+    allowedBlockTypes: ['speaker'],
+    getDefaultContent: () => ['speaker'],
+    customFields: [
+      {
+        name: 'twitterUrl',
+        label: 'Twitter URL',
+        type: types.SideEditPropType.Text,
+        validate: (value) =>
+          !value ||
+          value.startsWith('https://twitter.com/') ||
+          'Invalid Twitter URL',
+      },
+      {
+        name: 'githubUrl',
+        label: 'Github URL',
+        type: types.SideEditPropType.Text,
+        validate: (value) =>
+          !value ||
+          value.startsWith('https://github.com/') ||
+          'Invalid Twitter URL',
+      },
+      {
+        name: 'linkedinUrl',
+        label: 'Linkedin URL',
+        type: types.SideEditPropType.Text,
+        validate: (value) =>
+          !value ||
+          value.startsWith('https://www.linkedin.com/in/') ||
+          'Invalid Linkedin URL',
+      },
     ],
-    getExternalData: () =>
-      fetch('https://catfact.ninja/fact')
-        .then((response) => response.json())
-        .then((data) => ({
-          catFact: data.fact,
-        })),
   },
-
   {
     name: 'layout',
     pluralName: 'layout',

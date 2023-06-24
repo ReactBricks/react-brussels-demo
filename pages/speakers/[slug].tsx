@@ -9,11 +9,11 @@ import {
   useReactBricksContext,
 } from 'react-bricks/frontend'
 
-import ErrorNoFooter from '../components/errorNoFooter'
-import ErrorNoHeader from '../components/errorNoHeader'
-import ErrorNoKeys from '../components/errorNoKeys'
-import Layout from '../components/layout'
-import config from '../react-bricks/config'
+import ErrorNoFooter from '../../components/errorNoFooter'
+import ErrorNoHeader from '../../components/errorNoHeader'
+import ErrorNoKeys from '../../components/errorNoKeys'
+import Layout from '../../components/layout'
+import config from '../../react-bricks/config'
 
 interface PageProps {
   page: types.Page
@@ -126,7 +126,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   }
 
   const allPages = await fetchPages(config.apiKey, {
-    type: 'page',
+    type: 'speaker',
     pageSize: 100,
     sort: '-publishedAt',
   })
@@ -139,7 +139,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
         )
         .map((translation) => ({
           params: {
-            slug: [...translation.slug.split('/')],
+            slug: translation.slug,
           },
           locale: translation.language,
         }))
